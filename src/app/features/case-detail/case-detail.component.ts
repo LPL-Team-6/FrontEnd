@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { forkJoin, map, switchMap } from 'rxjs';
+import { defaultIfEmpty, forkJoin, map, switchMap } from 'rxjs';
 
 import { CaseApiService } from '../../core/case-api.service';
 import { toApiProblem, ApiProblem } from '../../core/api-error';
@@ -165,7 +165,10 @@ export class CaseDetailComponent {
                 map((fields) => fields.map((field) => ({ ...field, documentId: document.id!, documentType: document.documentType! }))),
               ),
             ),
-          ).pipe(map((fields) => ({ ...data, fields: fields.flat() }))),
+          ).pipe(
+            defaultIfEmpty([]),
+            map((fields) => ({ ...data, fields: fields.flat() })),
+          ),
         ),
       )
       .subscribe({
