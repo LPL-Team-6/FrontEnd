@@ -138,9 +138,8 @@ interface DocumentGroup {
     }
 
     .fields-table__row--selected {
-      background: var(--color-accent);
-      color: var(--color-accent-contrast);
-      outline: 2px solid var(--color-accent);
+      background: var(--color-highlight-bg);
+      box-shadow: inset 3px 0 0 var(--color-highlight);
     }
 
     .confidence-why {

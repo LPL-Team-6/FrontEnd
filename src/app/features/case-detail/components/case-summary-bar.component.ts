@@ -28,55 +28,56 @@ import { PlainStatusBadgeComponent } from './plain-status-badge.component';
       </dl>
     </div>
   `,
+  // Navy brand panel with an orange top rule - echoes the app header so the case's identity
+  // reads as the anchor of the page.
   styles: `
     .summary-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 1.75rem;
       flex-wrap: wrap;
-      padding: 0.75rem 1rem;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
+      padding: 1.375rem 1.625rem;
+      background: var(--color-brand);
+      color: var(--color-brand-contrast);
       border-radius: var(--radius);
-      margin-bottom: 1rem;
+      box-shadow: inset 0 4px 0 var(--color-highlight);
+      margin-bottom: 1.25rem;
     }
 
     .summary-bar__identity {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.875rem;
+      flex-wrap: wrap;
 
       h1 {
         margin: 0;
-        font-size: 1.3rem;
+        font-size: 1.875rem;
+        color: var(--color-brand-contrast);
       }
     }
 
     .summary-bar__stats {
       display: flex;
-      gap: 1.5rem;
+      gap: 1.75rem;
       margin: 0;
     }
 
     .summary-bar__stat {
-      text-align: right;
-
       dt {
-        font-size: 0.75rem;
-        color: var(--color-text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.03em;
+        font-size: 0.8rem;
+        color: var(--color-brand-muted);
       }
 
       dd {
         margin: 0;
-        font-size: 1.3rem;
+        font-size: 1.625rem;
         font-weight: 700;
       }
 
       dd.summary-bar__stat--alert {
-        color: var(--color-danger);
+        color: var(--color-highlight-on-brand);
       }
     }
   `,

@@ -46,15 +46,16 @@ import { Component, ElementRef, computed, output, signal, viewChild } from '@ang
   styles: `
     dialog {
       border: 1px solid var(--color-border);
-      border-radius: var(--radius);
+      border-top: 6px solid var(--color-highlight);
+      border-radius: 10px;
       background: var(--color-surface);
       color: var(--color-text);
-      padding: 1.25rem;
-      max-width: 420px;
+      padding: 1.5rem 1.75rem;
+      max-width: 520px;
     }
 
     dialog::backdrop {
-      background: rgb(0 0 0 / 0.4);
+      background: var(--color-backdrop);
     }
 
     h2 {
@@ -76,7 +77,7 @@ import { Component, ElementRef, computed, output, signal, viewChild } from '@ang
     }
 
     textarea {
-      border: 1px solid var(--color-border);
+      border: 1px solid var(--color-input-border);
       border-radius: var(--radius);
       padding: 0.5rem;
       background: var(--color-bg);
@@ -103,18 +104,19 @@ import { Component, ElementRef, computed, output, signal, viewChild } from '@ang
     }
 
     button {
-      border-radius: var(--radius);
-      padding: 0.4rem 0.9rem;
-      border: 1px solid var(--color-border);
+      height: var(--control-height);
+      border-radius: 6px;
+      padding: 0 1.25rem;
+      border: 1.5px solid var(--color-input-border);
       background: var(--color-surface);
-      color: var(--color-text);
+      color: var(--color-accent);
+      font-weight: 700;
     }
 
     .reason-dialog__confirm {
       background: var(--color-accent);
       color: var(--color-accent-contrast);
       border-color: var(--color-accent);
-      font-weight: 600;
     }
 
     .reason-dialog__confirm--danger {

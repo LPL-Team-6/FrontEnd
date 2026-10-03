@@ -46,10 +46,10 @@ interface ComparisonPair {
   `,
   styles: `
     .comparison {
-      border: 1px solid var(--color-accent);
+      border: 1px solid var(--color-border);
       border-radius: var(--radius);
       background: var(--color-surface);
-      padding: 0.75rem 1rem;
+      padding: 1rem 1.25rem;
       margin-bottom: 1rem;
     }
 
@@ -76,7 +76,8 @@ interface ComparisonPair {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-family: monospace;
+      font-family: var(--font-mono);
+      font-size: 1.125rem;
     }
 
     .comparison__vs {
@@ -92,9 +93,10 @@ interface ComparisonPair {
     }
 
     .comparison__changed {
-      background: var(--color-danger-bg);
-      color: var(--color-danger);
-      border-radius: 3px;
+      background: var(--color-diff-bg);
+      color: var(--color-text);
+      border-bottom: 2px solid var(--color-highlight);
+      font-weight: 700;
       padding: 0 1px;
     }
   `,

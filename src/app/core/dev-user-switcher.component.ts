@@ -20,21 +20,23 @@ import { isAdvisor } from './role-view';
       </select>
     </label>
   `,
+  // Lives in the navy app header, so it uses the brand tokens rather than surface colors.
   styles: `
     .dev-user-switcher {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: var(--color-text-muted);
+      gap: 0.625rem;
+      font-size: 0.85rem;
+      color: var(--color-brand-muted);
     }
 
     select {
-      padding: 0.35rem 0.5rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--color-border);
-      background: var(--color-surface);
-      color: var(--color-text);
+      height: 36px;
+      padding: 0 0.625rem;
+      border-radius: 6px;
+      border: 1px solid var(--color-brand-muted);
+      background: var(--color-brand-raised);
+      color: var(--color-brand-contrast);
     }
   `,
 })
