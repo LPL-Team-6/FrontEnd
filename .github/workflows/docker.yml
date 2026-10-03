@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout frontend
         uses: actions/checkout@v4
+        with:
+          path: FrontEnd
 
       - name: Checkout generated API client
         uses: actions/checkout@v4
