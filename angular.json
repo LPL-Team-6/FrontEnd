@@ -64,7 +64,8 @@
           "options": {
             "prebundle": {
               "exclude": ["@caseauth/angular-client"]
-            }
+            },
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
