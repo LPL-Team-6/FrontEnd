@@ -131,10 +131,29 @@ textarea {
 
 button {
   cursor: pointer;
+  transition: filter 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+
+  &:not(:disabled):hover {
+    filter: brightness(0.94);
+    box-shadow: 0 2px 8px rgb(8 29 77 / 0.16);
+  }
+
+  &:not(:disabled):active {
+    filter: brightness(0.86);
+    transform: translateY(1px);
+    box-shadow: none;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
 }
 
-button:disabled {
-  cursor: not-allowed;
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
 }
 
 /* Keyboard-only focus ring, visible against both themes; mouse clicks don't get an outline. */
