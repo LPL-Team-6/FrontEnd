@@ -2,15 +2,19 @@ import { Component, computed, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { DocumentResponse } from '@caseauth/angular-client/src/models/document-response';
-import { AiReviewInputFieldResponse } from '@caseauth/angular-client/src/models/ai-review-input-field-response';
+import { ExtractedFieldResponse } from '@caseauth/angular-client/src/models/extracted-field-response';
 
 interface Citer {
   code: string;
-  score: number | null;
 }
 
+type DocumentField = ExtractedFieldResponse & {
+  documentId: string;
+  documentType: string;
+};
+
 interface FieldRow {
-  field: AiReviewInputFieldResponse;
+  field: DocumentField;
   citers: Citer[];
   selected: boolean;
 }
@@ -74,12 +78,9 @@ interface DocumentGroup {
                     @if (confidencePercent(row.field.confidence)) {
                       <details class="confidence-why">
                         <summary>Why?</summary>
-                        <!-- R12: never show a confidence number that came from the model's own
-                             text - both numbers here are read straight from ExtractedField and
-                             Finding, never parsed out of AI-generated prose. -->
                         <p>Extraction confidence: {{ confidencePercent(row.field.confidence) }}</p>
                         @for (citer of row.citers; track citer.code) {
-                          <p>Rule match score ({{ citer.code }}): {{ citer.score ?? 'n/a' }}</p>
+                          <p>Cited by finding: {{ citer.code }}</p>
                         }
                       </details>
                     }
@@ -161,7 +162,7 @@ interface DocumentGroup {
 })
 export class DocumentFieldsPanelComponent {
   readonly documents = input.required<DocumentResponse[]>();
-  readonly fields = input.required<AiReviewInputFieldResponse[]>();
+  readonly fields = input.required<DocumentField[]>();
   // Maps an extracted field's id to the findings (code + score) that cite it as a mismatch
   // source - drives both the always-on "cited by" badge and R12's "Why?" explanation.
   readonly citingFindingsByFieldId = input.required<ReadonlyMap<string, Citer[]>>();

@@ -1,7 +1,12 @@
 import { Component, computed, input } from '@angular/core';
 
-import { AiReviewInputFieldResponse } from '@caseauth/angular-client/src/models/ai-review-input-field-response';
+import { ExtractedFieldResponse } from '@caseauth/angular-client/src/models/extracted-field-response';
 import { diffChars, DiffSegment } from '../../../core/text-diff';
+
+type DocumentField = ExtractedFieldResponse & {
+  documentId: string;
+  documentType: string;
+};
 
 interface ComparisonPair {
   fieldName: string;
@@ -95,10 +100,10 @@ interface ComparisonPair {
   `,
 })
 export class FindingComparisonComponent {
-  readonly fields = input.required<AiReviewInputFieldResponse[]>();
+  readonly fields = input.required<DocumentField[]>();
 
   readonly pairs = computed<ComparisonPair[]>(() => {
-    const byName = new Map<string, AiReviewInputFieldResponse[]>();
+    const byName = new Map<string, DocumentField[]>();
     for (const field of this.fields()) {
       if (!field.fieldName || !field.fieldValue) continue;
       const list = byName.get(field.fieldName) ?? [];

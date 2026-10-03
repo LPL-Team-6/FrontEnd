@@ -19,7 +19,6 @@ import { extractedFieldsList$Json } from '@caseauth/angular-client/src/fn/extrac
 
 import { findingsList$Json } from '@caseauth/angular-client/src/fn/findings/findings-list-json';
 import { aiReviewsList$Json } from '@caseauth/angular-client/src/fn/ai-reviews/ai-reviews-list-json';
-import { aiReviewInputGet$Json } from '@caseauth/angular-client/src/fn/ai-review-input/ai-review-input-get-json';
 import { decisionsList$Json } from '@caseauth/angular-client/src/fn/decisions/decisions-list-json';
 import { decisionsCreate$Json } from '@caseauth/angular-client/src/fn/decisions/decisions-create-json';
 import { auditEventsList$Json } from '@caseauth/angular-client/src/fn/audit-events/audit-events-list-json';
@@ -32,7 +31,6 @@ import { DocumentType } from '@caseauth/angular-client/src/models/document-type'
 import { ExtractedFieldResponse } from '@caseauth/angular-client/src/models/extracted-field-response';
 import { FindingResponse } from '@caseauth/angular-client/src/models/finding-response';
 import { AiReviewResponse } from '@caseauth/angular-client/src/models/ai-review-response';
-import { AiReviewInputResponse } from '@caseauth/angular-client/src/models/ai-review-input-response';
 import { DecisionResponse } from '@caseauth/angular-client/src/models/decision-response';
 import { CreateDecisionRequest } from '@caseauth/angular-client/src/models/create-decision-request';
 import { AuditEventResponse } from '@caseauth/angular-client/src/models/audit-event-response';
@@ -99,10 +97,6 @@ export class CaseApiService {
 
   listAiReviews(caseId: string): Observable<AiReviewResponse[]> {
     return this.api.invoke(aiReviewsList$Json, { caseId });
-  }
-
-  getAiReviewInput(caseId: string): Observable<AiReviewInputResponse> {
-    return this.api.invoke(aiReviewInputGet$Json, { caseId });
   }
 
   listDecisions(caseId: string): Observable<DecisionResponse[]> {

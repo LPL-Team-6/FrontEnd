@@ -6,17 +6,17 @@ import { FindingSeverity } from '@caseauth/angular-client/src/models/finding-sev
 import { findingToTodo } from '../../../core/finding-todo';
 
 const SEVERITY_BADGE: Record<FindingSeverity, string> = {
-  Low: 'badge--neutral',
-  Medium: 'badge--warning',
-  High: 'badge--danger',
+  Info: 'badge--neutral',
+  Warning: 'badge--warning',
+  Critical: 'badge--danger',
 };
 
 // Icon + text, never color alone, for severity - a colorblind reviewer or anyone on a
-// grayscale/high-contrast screen still needs to tell High from Low at a glance.
+// grayscale/high-contrast screen still needs to tell Critical from Info at a glance.
 const SEVERITY_ICON: Record<FindingSeverity, string> = {
-  Low: 'ℹ',
-  Medium: '▲',
-  High: '⛔',
+  Info: 'ℹ',
+  Warning: '▲',
+  Critical: '⛔',
 };
 
 interface FindingRow {
@@ -69,9 +69,6 @@ interface FindingRow {
             {{ row.finding.severity }}
           </span>
           <strong>{{ row.finding.code }}</strong>
-          @if (row.finding.score !== null && row.finding.score !== undefined) {
-            <span class="findings-list__score">score {{ row.finding.score }}</span>
-          }
         </div>
         <p>{{ row.finding.message }}</p>
         @if (row.sourceFieldLabels.length > 0) {

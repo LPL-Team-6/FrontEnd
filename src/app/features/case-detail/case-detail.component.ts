@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { forkJoin } from 'rxjs';
+import { forkJoin, map, switchMap } from 'rxjs';
 
 import { CaseApiService } from '../../core/case-api.service';
 import { toApiProblem, ApiProblem } from '../../core/api-error';
@@ -14,7 +14,7 @@ import { FindingResponse } from '@caseauth/angular-client/src/models/finding-res
 import { AiReviewResponse } from '@caseauth/angular-client/src/models/ai-review-response';
 import { DecisionResponse } from '@caseauth/angular-client/src/models/decision-response';
 import { AuditEventResponse } from '@caseauth/angular-client/src/models/audit-event-response';
-import { AiReviewInputFieldResponse } from '@caseauth/angular-client/src/models/ai-review-input-field-response';
+import { ExtractedFieldResponse } from '@caseauth/angular-client/src/models/extracted-field-response';
 
 import { ErrorBannerComponent } from '../../shared/error-banner.component';
 import { CaseSummaryBarComponent } from './components/case-summary-bar.component';
@@ -28,10 +28,15 @@ import { DocumentUploadComponent } from './components/document-upload.component'
 import { AdvisorTodoListComponent } from './components/advisor-todo-list.component';
 import { DraftClientMessageComponent } from './components/draft-client-message.component';
 
+type DocumentField = ExtractedFieldResponse & {
+  documentId: string;
+  documentType: string;
+};
+
 interface CaseDetailData {
   caseResponse: CaseResponse;
   documents: DocumentResponse[];
-  fields: AiReviewInputFieldResponse[];
+  fields: DocumentField[];
   findings: FindingResponse[];
   aiReviews: AiReviewResponse[];
   decisions: DecisionResponse[];
@@ -104,15 +109,14 @@ export class CaseDetailComponent {
     return map;
   });
 
-  // Inverse: extracted field id -> the findings (code + rule match score) that cite it, so the
-  // document/fields panel can badge which fields ANY finding cites, and R12's "Why?" link can
-  // show the rule match score alongside the field's own extraction confidence.
+  // Inverse: extracted field id -> the findings that cite it, so the document/fields panel can
+  // badge fields cited by any finding.
   readonly citingFindingsByFieldId = computed(() => {
-    const map = new Map<string, { code: string; score: number | null }[]>();
+    const map = new Map<string, { code: string }[]>();
     for (const finding of this.findings()) {
       for (const fieldId of finding.sourceFieldIds ?? []) {
         const citers = map.get(fieldId) ?? [];
-        citers.push({ code: finding.code ?? finding.id ?? 'finding', score: finding.score ?? null });
+        citers.push({ code: finding.code ?? finding.id ?? 'finding' });
         map.set(fieldId, citers);
       }
     }
@@ -148,17 +152,28 @@ export class CaseDetailComponent {
     forkJoin({
       caseResponse: this.caseApi.getCase(caseId),
       documents: this.caseApi.listDocuments(caseId),
-      aiReviewInput: this.caseApi.getAiReviewInput(caseId),
       findings: this.caseApi.listFindings(caseId),
       aiReviews: this.caseApi.listAiReviews(caseId),
       decisions: this.caseApi.listDecisions(caseId),
       auditEvents: this.caseApi.listAuditEvents(caseId),
-    }).subscribe({
-      next: ({ caseResponse, documents, aiReviewInput, findings, aiReviews, decisions, auditEvents }) => {
+    })
+      .pipe(
+        switchMap((data) =>
+          forkJoin(
+            data.documents.map((document) =>
+              this.caseApi.listExtractedFields(document.id!).pipe(
+                map((fields) => fields.map((field) => ({ ...field, documentId: document.id!, documentType: document.documentType! }))),
+              ),
+            ),
+          ).pipe(map((fields) => ({ ...data, fields: fields.flat() }))),
+        ),
+      )
+      .subscribe({
+      next: ({ caseResponse, documents, fields, findings, aiReviews, decisions, auditEvents }) => {
         this.data.set({
           caseResponse,
           documents,
-          fields: aiReviewInput.fields ?? [],
+          fields,
           findings,
           aiReviews,
           decisions,
