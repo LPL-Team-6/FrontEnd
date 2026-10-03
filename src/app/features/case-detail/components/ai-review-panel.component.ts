@@ -23,7 +23,7 @@ const RECOMMENDATION_BADGE: Record<AiRecommendation, string> = {
 
       <!-- R4: AI content is a proposal, never a decision - the fallback banner and "AI draft"
            label both exist so nobody mistakes this panel for a compliance determination. -->
-      @if (latest.modelName === fallbackModelName) {
+      @if (isFallback(latest.modelName)) {
         <div class="ai-review__fallback-banner" role="status">
           AI summary unavailable. Showing rule-based summary.
         </div>
@@ -105,9 +105,12 @@ const RECOMMENDATION_BADGE: Record<AiRecommendation, string> = {
 })
 export class AiReviewPanelComponent {
   readonly aiReviews = input.required<AiReviewResponse[]>();
-  readonly fallbackModelName = FALLBACK_MODEL_NAME;
 
   readonly sorted = computed(() => [...this.aiReviews()].sort((a, b) => (b.version ?? 0) - (a.version ?? 0)));
+
+  isFallback(modelName: string | null | undefined): boolean {
+    return modelName === FALLBACK_MODEL_NAME || modelName?.endsWith('-fallback') === true;
+  }
 
   badge(recommendation: AiRecommendation | undefined): string {
     return recommendation ? RECOMMENDATION_BADGE[recommendation] : 'badge--neutral';

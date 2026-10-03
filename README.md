@@ -26,8 +26,7 @@ some-folder/
   Blocking/FYI.
 - **R3** Stale-approval message on a 409: the exact required copy, a reload button, no raw
   error text. Verified by hand that it creates no audit entry (see Verification below).
-- **R4** AI fallback banner + "AI draft, review before use" label, keyed off
-  `AiReview.modelName === 'deterministic-fallback'` (the backend's real signal, not a guess).
+- **R4** AI fallback banner + "AI draft, review before use" label, keyed off the backend model name: `deterministic-fallback` or an AI-agent model ending in `-fallback`.
 - **R5** Full decision flow: required reason, "what will happen" copy, a stable idempotency
   key generated once per dialog open (survives a defensive double-submit), buttons disabled
   while in flight, and a "Decision recorded at {time}" message linking to the audit timeline.
