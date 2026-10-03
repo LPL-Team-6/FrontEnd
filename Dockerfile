@@ -1,10 +1,15 @@
 FROM node:22-alpine AS build
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
+COPY FrontEnd/package.json /app/FrontEnd/package.json
+COPY FrontEnd/package-lock.json /app/FrontEnd/package-lock.json
+COPY Backend-core-cases-auth-audit-/clients/angular /app/Backend-core-cases-auth-audit-/clients/angular
+WORKDIR /app/FrontEnd
+RUN npm install --install-links
+COPY FrontEnd/angular.json FrontEnd/tsconfig*.json FrontEnd/eslint.config.js FrontEnd/.prettierrc ./
+COPY FrontEnd/public ./public
+COPY FrontEnd/src ./src
 RUN npm run build
 
 FROM nginx:alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY FrontEnd/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/FrontEnd/dist/frontend/browser /usr/share/nginx/html
 EXPOSE 80
