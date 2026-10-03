@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, filter, map, switchMap, take, throwError, timer, timeout } from 'rxjs';
+import { Observable, filter, map, switchMap, take, tap, throwError, timer, timeout } from 'rxjs';
 
 import { CaseAuthApi } from '@caseauth/angular-client/src/case-auth-api';
 
@@ -123,7 +123,15 @@ export class CaseApiService {
   }
 
   private runPipelineJob(caseId: string, jobType: PipelineJobType): Observable<CaseResponse> {
-    return this.api.invoke(pipelineJobsEnqueue$Json, { caseId, body: { jobType } }).pipe(
+    const storageKey = `pipeline-job:${caseId}:${jobType}`;
+    const idempotencyKey = sessionStorage.getItem(storageKey) ?? crypto.randomUUID();
+    sessionStorage.setItem(storageKey, idempotencyKey);
+
+    return this.api.invoke(pipelineJobsEnqueue$Json, {
+      caseId,
+      'Idempotency-Key': idempotencyKey,
+      body: { jobType },
+    }).pipe(
       switchMap((job) =>
         timer(0, 1000).pipe(
           switchMap(() => this.api.invoke(pipelineJobsList$Json, { caseId })),
@@ -133,11 +141,13 @@ export class CaseApiService {
           ),
           take(1),
           timeout({ first: 60_000 }),
-          switchMap((current) =>
-            current.status === 'Completed'
-              ? this.getCase(caseId)
-              : throwError(() => new Error(current.error ?? 'Pipeline job failed.')),
-          ),
+          switchMap((current) => {
+            if (current.status !== 'Completed') {
+              sessionStorage.removeItem(storageKey);
+              return throwError(() => new Error(current.error ?? 'Pipeline job failed.'));
+            }
+            return this.getCase(caseId).pipe(tap(() => sessionStorage.removeItem(storageKey)));
+          }),
         ),
       ),
     );
