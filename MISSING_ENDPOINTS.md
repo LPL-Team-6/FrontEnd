@@ -2,8 +2,11 @@
 
 Per the UX brief: "If an endpoint you need is missing, stub it behind a service interface and
 list it here" instead of hand-writing calls against routes the OpenAPI spec doesn't have. This
-is that list - what the UX brief assumes exists that the backend (as of this branch) doesn't
-yet provide, what's stubbed in the meantime, and where.
+is that list - what the UX brief assumes exists that the backend (as of this writing) doesn't
+yet provide, what's stubbed in the meantime, and where. File paths below (`src/CaseAuth.Api/...`)
+are in the backend repo,
+[LPL-Team-6/Backend-core-cases-auth-audit-](https://github.com/LPL-Team-6/Backend-core-cases-auth-audit-),
+not this one.
 
 ## Reset demo (supervisor-only)
 

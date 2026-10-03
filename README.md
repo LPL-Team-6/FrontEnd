@@ -4,6 +4,17 @@ The Angular app the team actually clicks through, built against the UX requireme
 (role-based advisor/reviewer views, click-to-source findings, the full decision flow, etc.).
 All data is synthetic; all rule codes are illustrative, not LPL policy.
 
+This repo expects the backend
+([LPL-Team-6/Backend-core-cases-auth-audit-](https://github.com/LPL-Team-6/Backend-core-cases-auth-audit-))
+checked out as a **sibling directory** - `package.json`'s dependency on the generated API
+client and the commands below both assume that layout:
+
+```
+some-folder/
+  Backend-core-cases-auth-audit-/
+  FrontEnd/              <- this repo
+```
+
 ## Status
 
 **P0 (must-have) - all built:**
@@ -56,15 +67,15 @@ endpoints instead, so the acceptance checks below have something to run against.
 ## Running locally
 
 ```bash
-# terminal 1 - backend (see the root README for prerequisites)
-cd src/CaseAuth.Api
+# terminal 1 - backend (from the sibling Backend-core-cases-auth-audit- checkout - see its own README)
+cd ../Backend-core-cases-auth-audit-/src/CaseAuth.Api
 dotnet run
 
 # terminal 2 - seed the Smyth demo case (optional, but most of the UI needs real findings to show anything)
+cd ../Backend-core-cases-auth-audit-
 ./scripts/seed-smyth-case.sh
 
-# terminal 3 - frontend
-cd frontend
+# terminal 3 - this repo
 npm install
 npm start
 ```
@@ -76,14 +87,15 @@ and `supervisor` share FIRM-A, so switching between them on the same case shows 
 
 ## The generated API client
 
-`npm install` pulls in `@caseauth/angular-client` from `../clients/angular` (the backend's
-generated OpenAPI client - see that package's own README). It's installed with `--install-links`
-(set in `.npmrc`) so npm copies the package into `node_modules` instead of symlinking it. Without
-that flag, TypeScript's `tsc` fails to resolve `@angular/common/http` from inside the linked
-package (symlink resolution walks up from the package's *real* path, which is outside
-`node_modules/@angular`, not from its linked location).
+`npm install` pulls in `@caseauth/angular-client` from
+`../Backend-core-cases-auth-audit-/clients/angular` (the backend's generated OpenAPI client -
+see that package's own README) - hence the sibling-checkout layout above. It's installed with
+`--install-links` (set in `.npmrc`) so npm copies the package into `node_modules` instead of
+symlinking it. Without that flag, TypeScript's `tsc` fails to resolve `@angular/common/http`
+from inside the linked package (symlink resolution walks up from the package's *real* path,
+which is outside `node_modules/@angular`, not from its linked location).
 
-**After regenerating the client** (`../../scripts/generate-client.sh` from the backend), re-run
+**After regenerating the client** (`scripts/generate-client.sh` in the backend repo), re-run
 `npm install` here to pick up the new copy - `--install-links` means it won't update on its own
 the way a symlink would.
 
