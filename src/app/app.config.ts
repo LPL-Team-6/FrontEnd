@@ -7,10 +7,7 @@ import { ApiConfiguration } from '@caseauth/angular-client/src/api-configuration
 import { routes } from './app.routes';
 import { devUserInterceptor } from './core/dev-user.interceptor';
 
-// The backend only runs with the dev auth handler in Development (see the root README) -
-// http://localhost:5020 is its default Kestrel binding from launchSettings.json's "http"
-// profile. Point this at a different root if the API is running elsewhere.
-const API_ROOT_URL = 'http://localhost:5020';
+const API_ROOT_URL = '';
 
 export const appConfig: ApplicationConfig = {
   providers: [
