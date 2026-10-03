@@ -51,7 +51,7 @@ export function findingToTodo(finding: FindingResponse): TodoItem {
   // in either direction.
   return {
     findingId: finding.id!,
-    tag: finding.severity === 'Info' ? 'FYI' : 'Blocking',
+    tag: String(finding.severity) === 'Info' ? 'FYI' : 'Blocking',
     sentence: `A reviewer flagged "${finding.message ?? finding.code ?? 'something'}" on this case for a second look.`,
   };
 }

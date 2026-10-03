@@ -5,7 +5,7 @@ import { FindingResponse } from '@caseauth/angular-client/src/models/finding-res
 import { FindingSeverity } from '@caseauth/angular-client/src/models/finding-severity';
 import { findingToTodo } from '../../../core/finding-todo';
 
-const SEVERITY_BADGE: Record<FindingSeverity, string> = {
+const SEVERITY_BADGE: Record<string, string> = {
   Info: 'badge--neutral',
   Warning: 'badge--warning',
   Critical: 'badge--danger',
@@ -13,7 +13,7 @@ const SEVERITY_BADGE: Record<FindingSeverity, string> = {
 
 // Icon + text, never color alone, for severity - a colorblind reviewer or anyone on a
 // grayscale/high-contrast screen still needs to tell Critical from Info at a glance.
-const SEVERITY_ICON: Record<FindingSeverity, string> = {
+const SEVERITY_ICON: Record<string, string> = {
   Info: 'ℹ',
   Warning: '▲',
   Critical: '⛔',
