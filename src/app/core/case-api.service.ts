@@ -1,14 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, filter, map, switchMap, take, throwError, timer, timeout } from 'rxjs';
 
 import { CaseAuthApi } from '@caseauth/angular-client/src/case-auth-api';
 
 import { casesList$Json } from '@caseauth/angular-client/src/fn/cases/cases-list-json';
 import { casesGet$Json } from '@caseauth/angular-client/src/fn/cases/cases-get-json';
 import { casesCreate$Json } from '@caseauth/angular-client/src/fn/cases/cases-create-json';
-import { casesMarkExtracted$Json } from '@caseauth/angular-client/src/fn/cases/cases-mark-extracted-json';
-import { casesMarkScreened$Json } from '@caseauth/angular-client/src/fn/cases/cases-mark-screened-json';
-import { casesMarkAiReviewed$Json } from '@caseauth/angular-client/src/fn/cases/cases-mark-ai-reviewed-json';
+import { pipelineJobsEnqueue$Json } from '@caseauth/angular-client/src/fn/pipeline-jobs/pipeline-jobs-enqueue-json';
+import { pipelineJobsList$Json } from '@caseauth/angular-client/src/fn/pipeline-jobs/pipeline-jobs-list-json';
 import { casesRequestDecision$Json } from '@caseauth/angular-client/src/fn/cases/cases-request-decision-json';
 import { casesRequestDocuments$Json } from '@caseauth/angular-client/src/fn/cases/cases-request-documents-json';
 
@@ -25,6 +24,8 @@ import { auditEventsList$Json } from '@caseauth/angular-client/src/fn/audit-even
 import { meGet$Json } from '@caseauth/angular-client/src/fn/me/me-get-json';
 
 import { CaseResponse } from '@caseauth/angular-client/src/models/case-response';
+import { PipelineJobResponse } from '@caseauth/angular-client/src/models/pipeline-job-response';
+import { PipelineJobType } from '@caseauth/angular-client/src/models/pipeline-job-type';
 import { CreateCaseRequest } from '@caseauth/angular-client/src/models/create-case-request';
 import { DocumentResponse } from '@caseauth/angular-client/src/models/document-response';
 import { DocumentType } from '@caseauth/angular-client/src/models/document-type';
@@ -60,15 +61,15 @@ export class CaseApiService {
   }
 
   markExtracted(caseId: string): Observable<CaseResponse> {
-    return this.api.invoke(casesMarkExtracted$Json, { id: caseId });
+    return this.runPipelineJob(caseId, 'Extract');
   }
 
   markScreened(caseId: string): Observable<CaseResponse> {
-    return this.api.invoke(casesMarkScreened$Json, { id: caseId });
+    return this.runPipelineJob(caseId, 'Screen');
   }
 
   markAiReviewed(caseId: string): Observable<CaseResponse> {
-    return this.api.invoke(casesMarkAiReviewed$Json, { id: caseId });
+    return this.runPipelineJob(caseId, 'AiReview');
   }
 
   requestDecision(caseId: string): Observable<CaseResponse> {
@@ -119,5 +120,26 @@ export class CaseApiService {
 
   listAuditEvents(caseId: string): Observable<AuditEventResponse[]> {
     return this.api.invoke(auditEventsList$Json, { caseId });
+  }
+
+  private runPipelineJob(caseId: string, jobType: PipelineJobType): Observable<CaseResponse> {
+    return this.api.invoke(pipelineJobsEnqueue$Json, { caseId, body: { jobType } }).pipe(
+      switchMap((job) =>
+        timer(0, 1000).pipe(
+          switchMap(() => this.api.invoke(pipelineJobsList$Json, { caseId })),
+          map((jobs) => jobs.find((candidate) => candidate.id === job.id)),
+          filter((current): current is PipelineJobResponse =>
+            current?.status === 'Completed' || current?.status === 'Failed',
+          ),
+          take(1),
+          timeout({ first: 60_000 }),
+          switchMap((current) =>
+            current.status === 'Completed'
+              ? this.getCase(caseId)
+              : throwError(() => new Error(current.error ?? 'Pipeline job failed.')),
+          ),
+        ),
+      ),
+    );
   }
 }

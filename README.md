@@ -31,6 +31,7 @@ some-folder/
 - **R5** Full decision flow: required reason, "what will happen" copy, a stable idempotency
   key generated once per dialog open (survives a defensive double-submit), buttons disabled
   while in flight, and a "Decision recorded at {time}" message linking to the audit timeline.
+- Lifecycle controls enqueue Extract, Screen, and AI-review jobs and wait for completion; screening findings come from the deterministic backend engine.
 - **R6** Loading/empty/error/retry on every data-loading component; specific upload errors
   (exact size in MB, exact allowed types) checked client-side before the network round-trip.
 - **R7** Case summary bar: client name, blocking-issue count, days open. Account type and risk

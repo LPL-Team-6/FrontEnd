@@ -5,7 +5,16 @@ import { ApiProblem, toApiProblem } from '../../../core/api-error';
 import { DocumentType } from '@caseauth/angular-client/src/models/document-type';
 import { ErrorBannerComponent } from '../../../shared/error-banner.component';
 
-const DOCUMENT_TYPES: readonly DocumentType[] = ['GovernmentId', 'ProofOfAddress', 'Financial', 'Other'];
+const DOCUMENT_TYPES: readonly DocumentType[] = [
+  'Application',
+  'GovernmentId',
+  'ProofOfAddress',
+  'W9',
+  'BeneficialOwnership',
+  'FormationDocument',
+  'Financial',
+  'Other',
+];
 
 // Mirrors src/CaseAuth.Api/appsettings.json's Storage section by hand - no endpoint exposes
 // this config, so these two constants will drift if that file changes (see
