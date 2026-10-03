@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, filter, map, switchMap, take, tap, throwError, timer, timeout } from 'rxjs';
+import { newIdempotencyKey } from './idempotency-key';
 
 import { CaseAuthApi } from '@caseauth/angular-client/src/case-auth-api';
 
@@ -124,7 +125,7 @@ export class CaseApiService {
 
   private runPipelineJob(caseId: string, jobType: PipelineJobType): Observable<CaseResponse> {
     const storageKey = `pipeline-job:${caseId}:${jobType}`;
-    const idempotencyKey = sessionStorage.getItem(storageKey) ?? crypto.randomUUID();
+    const idempotencyKey = sessionStorage.getItem(storageKey) ?? newIdempotencyKey();
     sessionStorage.setItem(storageKey, idempotencyKey);
 
     return this.api.invoke(pipelineJobsEnqueue$Json, {

@@ -2,6 +2,7 @@ import { Component, inject, input, output, signal, viewChild } from '@angular/co
 import { DatePipe } from '@angular/common';
 
 import { CaseApiService } from '../../../core/case-api.service';
+import { newIdempotencyKey } from '../../../core/idempotency-key';
 import { DevUserService } from '../../../core/dev-user.service';
 import { ApiProblem, toApiProblem } from '../../../core/api-error';
 import { CaseResponse } from '@caseauth/angular-client/src/models/case-response';
@@ -243,7 +244,7 @@ export class DecisionActionsComponent {
     this.lastDecision.set(null);
     // Generated once per dialog open (not per API call) so a defensive double-submit reuses the
     // exact same idempotency key rather than racing the server with two different ones.
-    this.pending = { kind: 'decision', outcome, idempotencyKey: crypto.randomUUID() };
+    this.pending = { kind: 'decision', outcome, idempotencyKey: newIdempotencyKey() };
     this.dialogRef().open({
       title: `${outcome === 'Rejected' ? 'Reject' : outcome === 'Escalated' ? 'Escalate' : 'Approve'} this case`,
       description: DECISION_DESCRIPTIONS[outcome],
