@@ -1,8 +1,16 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <header class="app-header">
-  <a class="app-header__brand" routerLink="/cases">CaseAuth Workbench</a>
-  <app-dev-user-switcher />
+  <div class="app-header__inner">
+    <a class="app-header__brand" routerLink="/cases">CaseAuth Workbench</a>
+    <nav class="app-header__nav" aria-label="Main">
+      <a routerLink="/cases" routerLinkActive="app-header__nav-link--active" ariaCurrentWhenActive="page" class="app-header__nav-link">Case queue</a>
+    </nav>
+    <div class="app-header__controls">
+      <app-theme-switcher />
+      <app-dev-user-switcher />
+    </div>
+  </div>
 </header>
 
 <main class="app-main" id="main-content">

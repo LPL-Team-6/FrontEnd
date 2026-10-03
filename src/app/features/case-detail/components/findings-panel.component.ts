@@ -108,8 +108,9 @@ interface FindingRow {
     }
 
     .findings-list__item--selected {
-      border-color: var(--color-accent);
-      box-shadow: 0 0 0 1px var(--color-accent);
+      background: var(--color-highlight-bg);
+      border-color: var(--color-highlight);
+      box-shadow: 0 0 0 1px var(--color-highlight);
     }
 
     .findings-list__headline {

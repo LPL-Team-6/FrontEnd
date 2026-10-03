@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { DevUserSwitcherComponent } from './core/dev-user-switcher.component';
+import { ThemeSwitcherComponent } from './core/theme-switcher.component';
 
 @Component({
-  imports: [RouterOutlet, RouterLink, DevUserSwitcherComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, DevUserSwitcherComponent, ThemeSwitcherComponent],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',

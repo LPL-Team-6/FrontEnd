@@ -136,27 +136,23 @@ type PendingAction =
     }
 
     button {
-      border-radius: var(--radius);
-      padding: 0.45rem 0.9rem;
-      border: 1px solid var(--color-border);
+      height: var(--control-height);
+      border-radius: 6px;
+      padding: 0 1.25rem;
+      border: 1.5px solid var(--color-accent);
       background: var(--color-surface);
-      color: var(--color-text);
-      font-weight: 600;
+      color: var(--color-accent);
+      font-weight: 700;
     }
 
     .actions__approve {
-      border-color: var(--color-success);
-      color: var(--color-success);
+      background: var(--color-accent);
+      color: var(--color-accent-contrast);
     }
 
     .actions__reject {
       border-color: var(--color-danger);
       color: var(--color-danger);
-    }
-
-    .actions__escalate {
-      border-color: var(--color-warning);
-      color: var(--color-warning);
     }
 
     .actions__hint {

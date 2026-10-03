@@ -1,4 +1,8 @@
-<h1>Case queue</h1>
+<div class="page-heading">
+  <p class="page-heading__eyebrow">Compliance review</p>
+  <h1>Case queue</h1>
+  <p class="page-heading__lede">Cases that need your action are listed first, then newest.</p>
+</div>
 
 <form class="new-case" (submit)="$event.preventDefault(); createCase()">
   <label for="new-case-name">New case - applicant full name</label>
@@ -32,34 +36,41 @@
 } @else if (visibleCases().length === 0) {
   <p>{{ statusFilter() === 'All' && !searchQuery() ? 'No open cases.' : 'No cases match this filter.' }}</p>
 } @else {
-  <table class="case-table">
-    <caption class="sr-only">Cases, cases needing your action first</caption>
-    <thead>
-      <tr>
-        <th scope="col">Applicant</th>
-        <th scope="col">Status</th>
-        <th scope="col">Firm</th>
-        <th scope="col">Open</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (row of visibleCases(); track row.case.id) {
-        <tr [class.case-table__row--my-turn]="row.myTurn">
-          <td>
-            <a [routerLink]="['/cases', row.case.id]">{{ row.case.applicantFullName || '(unnamed applicant)' }}</a>
-          </td>
-          <td><app-plain-status-badge [status]="row.case.status!" /></td>
-          <td>{{ row.case.firmId }}</td>
-          <td>
-            {{ row.daysOpen }} {{ row.daysOpen === 1 ? 'day' : 'days' }}
-            @if (row.aging) {
-              <span class="badge badge--warning" title="Open longer than expected">
-                <span aria-hidden="true">⏳</span> aging
-              </span>
-            }
-          </td>
+  <div class="case-table__scroll">
+    <table class="case-table">
+      <caption class="sr-only">Cases, cases needing your action first</caption>
+      <thead>
+        <tr>
+          <th scope="col">Applicant</th>
+          <th scope="col">Status</th>
+          <th scope="col">Firm</th>
+          <th scope="col">Open</th>
         </tr>
-      }
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        @for (row of visibleCases(); track row.case.id) {
+          <tr [class.case-table__row--my-turn]="row.myTurn">
+            <td>
+              <div class="case-table__applicant">
+                @if (row.myTurn) {
+                  <span class="badge badge--action"><span class="case-table__dot" aria-hidden="true"></span>Your action</span>
+                }
+                <a [routerLink]="['/cases', row.case.id]">{{ row.case.applicantFullName || '(unnamed applicant)' }}</a>
+              </div>
+            </td>
+            <td><app-plain-status-badge [status]="row.case.status!" /></td>
+            <td class="mono case-table__firm">{{ row.case.firmId }}</td>
+            <td>
+              {{ row.daysOpen }} {{ row.daysOpen === 1 ? 'day' : 'days' }}
+              @if (row.aging) {
+                <span class="badge badge--warning" title="Open longer than expected">
+                  <span aria-hidden="true">⏳</span> aging
+                </span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 }
